@@ -1,4 +1,4 @@
-/* Custom CSS for Qat Agency Website */
+/* Custom CSS for Qat Agency Website - Professional Animations */
 
 /* Animation Classes */
 @keyframes fade-in {
@@ -23,6 +23,86 @@
     }
 }
 
+@keyframes slide-in-left {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes scale-in {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes bounce-in {
+    0% {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+    70% {
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+@keyframes gradient-shift {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+/* Animation Utility Classes */
 .animate-fade-in {
     animation: fade-in 1s ease-out;
 }
@@ -33,6 +113,71 @@
 
 .animate-slide-in {
     animation: slide-in-right 0.8s ease-out;
+}
+
+.animate-slide-in-left {
+    animation: slide-in-left 0.8s ease-out;
+}
+
+.animate-scale-in {
+    animation: scale-in 0.6s ease-out;
+}
+
+.animate-bounce-in {
+    animation: bounce-in 1s ease-out;
+}
+
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* Scroll-triggered animations */
+.scroll-animate {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scroll-animate.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.scroll-animate-left {
+    opacity: 0;
+    transform: translateX(-30px);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scroll-animate-left.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.scroll-animate-right {
+    opacity: 0;
+    transform: translateX(30px);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scroll-animate-right.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.scroll-animate-scale {
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scroll-animate-scale.visible {
+    opacity: 1;
+    transform: scale(1);
 }
 
 /* Smooth Scrolling */
@@ -58,7 +203,7 @@ html {
     background: #059669;
 }
 
-/* Hero Section Overlay */
+/* Hero Section Enhanced Animations */
 #home::before {
     content: '';
     position: absolute;
@@ -67,11 +212,71 @@ html {
     right: 0;
     bottom: 0;
     background: linear-gradient(135deg, rgba(16, 185, 129, 0.8), rgba(5, 150, 105, 0.8));
+    background-size: 200% 200%;
+    animation: gradient-shift 8s ease infinite;
     z-index: 1;
 }
 
 #home > div:first-child {
     z-index: 2;
+}
+
+/* Floating animation for hero content */
+.hero-content {
+    animation: float 6s ease-in-out infinite;
+}
+
+/* Shimmer effect for buttons */
+.btn-shimmer {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(90deg, #10b981 0%, #059669 50%, #10b981 100%);
+    background-size: 200% 100%;
+    animation: shimmer 3s linear infinite;
+}
+
+/* Performance optimizations */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Mobile animation optimizations */
+@media (max-width: 768px) {
+    .animate-float {
+        animation: float 4s ease-in-out infinite;
+    }
+    
+    .animate-pulse-slow {
+        animation: pulse 3s ease-in-out infinite;
+    }
+    
+    .scroll-animate,
+    .scroll-animate-left,
+    .scroll-animate-right,
+    .scroll-animate-scale {
+        transition: all 0.4s ease-out;
+    }
+}
+
+@media (max-width: 480px) {
+    .animate-float {
+        animation: none;
+    }
+    
+    .animate-pulse-slow {
+        animation: none;
+    }
+    
+    /* Disable heavy animations on small mobile devices */
+    .btn-shimmer {
+        animation: none;
+        background: linear-gradient(135deg, #10b981, #059669);
+    }
 }
 
 /* Card Hover Effects */
