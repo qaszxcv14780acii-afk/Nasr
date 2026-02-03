@@ -116,10 +116,12 @@ html {
     box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
 }
 
-/* Enhanced Image Card Styles */
+/* Enhanced Image Card Styles - Mobile Optimized */
 .image-card {
     position: relative;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .image-card:hover {
@@ -143,6 +145,68 @@ html {
 
 .image-card:hover .overlay {
     opacity: 1;
+}
+
+/* Mobile Product Card Optimizations */
+@media (max-width: 768px) {
+    .image-card {
+        margin-bottom: 16px;
+    }
+    
+    .image-card:hover {
+        transform: translateY(-4px) scale(1.01);
+    }
+    
+    .image-card .h-64 {
+        height: 200px !important;
+    }
+    
+    .image-card img {
+        transition: transform 0.3s ease;
+    }
+    
+    .image-card:hover img {
+        transform: scale(1.05);
+    }
+}
+
+@media (max-width: 480px) {
+    .image-card {
+        margin-bottom: 12px;
+    }
+    
+    .image-card:hover {
+        transform: translateY(-2px);
+    }
+    
+    .image-card .h-64 {
+        height: 180px !important;
+    }
+    
+    .image-card img {
+        transition: transform 0.3s ease;
+    }
+    
+    .image-card:hover img {
+        transform: scale(1.03);
+    }
+    
+    .image-card .p-6 {
+        padding: 1rem !important;
+    }
+    
+    .image-card h3 {
+        font-size: 1.1rem !important;
+    }
+    
+    .image-card p {
+        font-size: 0.9rem !important;
+    }
+    
+    .image-card button {
+        padding: 0.5rem 1rem !important;
+        font-size: 0.9rem !important;
+    }
 }
 
 /* Enhanced Gallery Styles - Mobile Optimized */
