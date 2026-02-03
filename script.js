@@ -1,81 +1,95 @@
-// JavaScript for Qat Agency Website - Enhanced with Professional Animations
+// JavaScript for Qat Agency Website - Enhanced with Mobile Performance Optimizations
 
 // Mobile Menu Toggle
 const mobileMenuBtn = document.getElementById('mobileMenuBtn');
 const mobileMenu = document.getElementById('mobileMenu');
 
-mobileMenuBtn.addEventListener('click', () => {
-    mobileMenu.classList.toggle('hidden');
-    mobileMenu.classList.toggle('mobile-menu-enter');
-});
-
-// Close mobile menu when clicking on a link
-const mobileMenuLinks = mobileMenu.querySelectorAll('a');
-mobileMenuLinks.forEach(link => {
-    link.addEventListener('click', () => {
-        mobileMenu.classList.add('hidden');
+if (mobileMenuBtn && mobileMenu) {
+    mobileMenuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+        mobileMenu.classList.toggle('mobile-menu-enter');
     });
-});
 
-// Smooth scrolling for navigation links
+    // Close mobile menu when clicking on a link
+    const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+    mobileMenuLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+        });
+    });
+}
+
+// Smooth scrolling for navigation links - Optimized for mobile
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
         const target = document.querySelector(this.getAttribute('href'));
         if (target) {
+            // Use faster scrolling on mobile
+            const isMobile = window.innerWidth <= 768;
             target.scrollIntoView({
-                behavior: 'smooth',
+                behavior: isMobile ? 'auto' : 'smooth',
                 block: 'start'
             });
         }
     });
 });
 
-// Active navigation highlighting
+// Active navigation highlighting - Optimized
+let scrollTimeout;
 window.addEventListener('scroll', () => {
-    const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('nav a[href^="#"]');
-    
-    let current = '';
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.clientHeight;
-        if (scrollY >= (sectionTop - 200)) {
-            current = section.getAttribute('id');
-        }
-    });
+    if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+    }
+    scrollTimeout = setTimeout(() => {
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('nav a[href^="#"]');
+        
+        let current = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            if (scrollY >= (sectionTop - 100)) {
+                current = section.getAttribute('id');
+            }
+        });
 
-    navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href').slice(1) === current) {
-            link.classList.add('active');
-        }
-    });
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href').slice(1) === current) {
+                link.classList.add('active');
+            }
+        });
+    }, 100); // Throttle scroll events
 });
 
-// Enhanced Scroll-triggered Animations with Performance Optimization
+// Enhanced Scroll-triggered Animations with Mobile Performance
+const isMobile = window.innerWidth <= 768;
 const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
+    threshold: isMobile ? 0.05 : 0.1, // Lower threshold for mobile
+    rootMargin: isMobile ? '0px 0px -25px 0px' : '0px 0px -50px 0px'
 };
 
 const animationObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
-            // Add visible class with staggered delay for multiple elements
-            const elements = entry.target.querySelectorAll('.scroll-animate, .scroll-animate-left, .scroll-animate-right, .scroll-animate-scale');
-            
-            if (elements.length > 0) {
-                elements.forEach((el, index) => {
-                    setTimeout(() => {
-                        el.classList.add('visible');
-                    }, index * 100); // Stagger animations
-                });
-            } else {
+            // On mobile, show elements immediately without stagger
+            if (isMobile) {
                 entry.target.classList.add('visible');
+            } else {
+                // Add staggered delay for desktop
+                const elements = entry.target.querySelectorAll('.scroll-animate, .scroll-animate-left, .scroll-animate-right, .scroll-animate-scale');
+                
+                if (elements.length > 0) {
+                    elements.forEach((el, index) => {
+                        setTimeout(() => {
+                            el.classList.add('visible');
+                        }, index * 50); // Faster stagger
+                    });
+                } else {
+                    entry.target.classList.add('visible');
+                }
             }
             
-            // Stop observing once animated
             animationObserver.unobserve(entry.target);
         }
     });
@@ -88,95 +102,88 @@ document.addEventListener('DOMContentLoaded', () => {
         animationObserver.observe(el);
     });
     
-    // Add staggered animation to product cards
-    const productCards = document.querySelectorAll('.image-card');
-    const productObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry, index) => {
-            if (entry.isIntersecting) {
-                setTimeout(() => {
-                    entry.target.classList.add('animate-scale-in');
-                }, index * 150);
-                productObserver.unobserve(entry.target);
-            }
+    // Skip staggered animations on mobile for performance
+    if (!isMobile) {
+        // Add staggered animation to product cards
+        const productCards = document.querySelectorAll('.image-card');
+        const productObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('animate-scale-in');
+                    }, index * 100);
+                    productObserver.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        
+        productCards.forEach(card => {
+            productObserver.observe(card);
         });
-    }, observerOptions);
-    
-    productCards.forEach(card => {
-        productObserver.observe(card);
-    });
-    
-    // Add staggered animation to gallery items
-    const galleryItems = document.querySelectorAll('.gallery-item');
-    const galleryObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry, index) => {
-            if (entry.isIntersecting) {
-                setTimeout(() => {
-                    entry.target.classList.add('animate-scale-in');
-                }, index * 100);
-                galleryObserver.unobserve(entry.target);
-            }
+        
+        // Add staggered animation to gallery items
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        const galleryObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('animate-scale-in');
+                    }, index * 50);
+                    galleryObserver.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        
+        galleryItems.forEach(item => {
+            galleryObserver.observe(item);
         });
-    }, observerOptions);
-    
-    galleryItems.forEach(item => {
-        galleryObserver.observe(item);
-    });
+    }
 });
 
-// Performance optimization: Throttle scroll events
-let ticking = false;
-function requestTick() {
-    if (!ticking) {
-        requestAnimationFrame(updateAnimations);
-        ticking = true;
+// Disable parallax on mobile for performance
+if (!isMobile) {
+    let parallaxElement = document.querySelector('#home img');
+    if (parallaxElement) {
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const speed = 0.5;
+            
+            if (parallax && scrolled < window.innerHeight) {
+                parallaxElement.style.transform = `translateY(${scrolled * speed}px)`;
+            }
+        });
     }
 }
 
-function updateAnimations() {
-    ticking = false;
-}
-
-window.addEventListener('scroll', requestTick);
-
-// Parallax effect for hero section (performance optimized)
-let parallaxElement = document.querySelector('#home img');
-if (parallaxElement) {
-    window.addEventListener('scroll', () => {
-        const scrolled = window.pageYOffset;
-        const parallax = parallaxElement;
-        const speed = 0.5;
-        
-        if (parallax && scrolled < window.innerHeight) {
-            parallax.style.transform = `translateY(${scrolled * speed}px)`;
-        }
-    });
-}
-
-// Enhanced loading animations
+// Enhanced loading animations - Optimized for mobile
 window.addEventListener('load', () => {
-    // Add fade-in animation to body
-    document.body.style.opacity = '0';
-    document.body.style.transition = 'opacity 0.5s ease-in';
-    
-    setTimeout(() => {
-        document.body.style.opacity = '1';
-    }, 100);
-    
-    // Animate social media icons on load
-    const socialIcons = document.querySelectorAll('.social-icon');
-    socialIcons.forEach((icon, index) => {
-        icon.style.opacity = '0';
-        icon.style.transform = 'translateY(20px)';
+    // Skip fade-in animation on mobile
+    if (!isMobile) {
+        document.body.style.opacity = '0';
+        document.body.style.transition = 'opacity 0.3s ease-in';
         
         setTimeout(() => {
-            icon.style.transition = 'all 0.5s ease';
-            icon.style.opacity = '1';
-            icon.style.transform = 'translateY(0)';
-        }, 1000 + (index * 200));
-    });
+            document.body.style.opacity = '1';
+        }, 50);
+    }
+    
+    // Skip social icons animation on mobile
+    if (!isMobile) {
+        const socialIcons = document.querySelectorAll('.social-icon');
+        socialIcons.forEach((icon, index) => {
+            icon.style.opacity = '0';
+            icon.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                icon.style.transition = 'all 0.3s ease';
+                icon.style.opacity = '1';
+                icon.style.transform = 'translateY(0)';
+            }, 500 + (index * 100));
+        });
+    }
 });
 
-// Contact Form Validation and Submission with WhatsApp
+// Contact Form Validation and Submission with WhatsApp - Optimized
 const contactForm = document.getElementById('contactForm');
 if (contactForm) {
     contactForm.addEventListener('submit', function(e) {
@@ -226,10 +233,11 @@ if (contactForm) {
         // Show loading state
         const submitBtn = this.querySelector('button[type="submit"]');
         const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i class="fab fa-whatsapp text-xl ml-2 animate-pulse"></i> جاري فتح WhatsApp...';
+        submitBtn.innerHTML = '<i class="fab fa-whatsapp text-xl ml-2"></i> جاري فتح WhatsApp...';
         submitBtn.disabled = true;
         
-        // Open WhatsApp after short delay
+        // Open WhatsApp immediately on mobile
+        const delay = isMobile ? 500 : 1500;
         setTimeout(() => {
             window.open(whatsappLink, '_blank');
             
@@ -242,7 +250,7 @@ if (contactForm) {
             // Reset button
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
-        }, 1500);
+        }, delay);
     });
 }
 
@@ -257,10 +265,10 @@ function validateEmail(email) {
     return emailRegex.test(email);
 }
 
-// Show success message
+// Show success message - Optimized
 function showSuccess(form, message) {
     const successDiv = document.createElement('div');
-    successDiv.className = 'success-message bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 animate-fade-in';
+    successDiv.className = 'success-message bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4';
     successDiv.innerHTML = `
         <div class="flex items-center">
             <i class="fas fa-check-circle text-xl ml-3"></i>
@@ -270,16 +278,17 @@ function showSuccess(form, message) {
     
     form.insertBefore(successDiv, form.firstChild);
     
-    // Auto remove after 5 seconds
+    // Auto remove faster on mobile
+    const timeout = isMobile ? 3000 : 5000;
     setTimeout(() => {
         successDiv.remove();
-    }, 5000);
+    }, timeout);
 }
 
-// Show error message
+// Show error message - Optimized
 function showError(form, message) {
     const errorDiv = document.createElement('div');
-    errorDiv.className = 'error-message bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4 animate-fade-in';
+    errorDiv.className = 'error-message bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4';
     errorDiv.innerHTML = `
         <div class="flex items-center">
             <i class="fas fa-exclamation-circle text-xl ml-3"></i>
@@ -289,13 +298,14 @@ function showError(form, message) {
     
     form.insertBefore(errorDiv, form.firstChild);
     
-    // Auto remove after 5 seconds
+    // Auto remove faster on mobile
+    const timeout = isMobile ? 3000 : 5000;
     setTimeout(() => {
         errorDiv.remove();
-    }, 5000);
+    }, timeout);
 }
 
-// Enhanced lightbox for product cards
+// Enhanced lightbox for product cards - Optimized
 document.querySelectorAll('.image-card').forEach(card => {
     card.addEventListener('click', function(e) {
         if (!e.target.closest('button')) {
@@ -305,30 +315,42 @@ document.querySelectorAll('.image-card').forEach(card => {
     });
 });
 
-// Scroll to top button with enhanced animation
+// Scroll to top button - Optimized
 const scrollToTopBtn = document.createElement('button');
 scrollToTopBtn.innerHTML = '<i class="fas fa-arrow-up"></i>';
-scrollToTopBtn.className = 'fixed bottom-8 left-8 bg-green-600 text-white w-12 h-12 rounded-full shadow-lg hover:bg-green-700 transition-all duration-300 opacity-0 invisible z-40 animate-pulse-slow';
+scrollToTopBtn.className = 'fixed bottom-8 left-8 bg-green-600 text-white w-12 h-12 rounded-full shadow-lg hover:bg-green-700 transition-all duration-300 opacity-0 invisible z-40';
 scrollToTopBtn.setAttribute('aria-label', 'العودة للأعلى');
 document.body.appendChild(scrollToTopBtn);
 
-// Show/hide scroll to top button with animation
+// Show/hide scroll to top button - Optimized
+let scrollButtonTimeout;
 window.addEventListener('scroll', () => {
-    if (window.scrollY > 300) {
-        scrollToTopBtn.classList.remove('opacity-0', 'invisible');
-        scrollToTopBtn.classList.add('opacity-100', 'visible');
-    } else {
-        scrollToTopBtn.classList.add('opacity-0', 'invisible');
-        scrollToTopBtn.classList.remove('opacity-100', 'visible');
+    if (scrollButtonTimeout) {
+        clearTimeout(scrollButtonTimeout);
     }
+    scrollButtonTimeout = setTimeout(() => {
+        if (window.scrollY > 300) {
+            scrollToTopBtn.classList.remove('opacity-0', 'invisible');
+            scrollToTopBtn.classList.add('opacity-100', 'visible');
+        } else {
+            scrollToTopBtn.classList.add('opacity-0', 'invisible');
+            scrollToTopBtn.classList.remove('opacity-100', 'visible');
+        }
+    }, 100);
 });
 
-// Smooth scroll to top with animation
+// Smooth scroll to top - Optimized for mobile
 scrollToTopBtn.addEventListener('click', () => {
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
+    if (isMobile) {
+        // Instant scroll on mobile for better performance
+        window.scrollTo(0, 0);
+    } else {
+        // Smooth scroll on desktop
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
 });
 
 // Enhanced gallery lightbox
@@ -338,124 +360,3 @@ document.querySelectorAll('.gallery-item').forEach(item => {
         createEnhancedLightbox(img.src, img.alt);
     });
 });
-
-// Additional Intersection Observer for other elements
-const additionalObserverOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
-
-// ... rest of the code remains the same ...
-const additionalObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('animate-fade-in');
-        }
-    });
-}, additionalObserverOptions);
-
-// Observe elements for animation
-document.querySelectorAll('.feature-card, .product-card, .gallery-item').forEach(el => {
-    additionalObserver.observe(el);
-});
-
-// Lazy loading for images
-if ('IntersectionObserver' in window) {
-    const imageObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src || img.src;
-                img.classList.add('loaded');
-                observer.unobserve(img);
-            }
-        });
-    });
-    
-    document.querySelectorAll('img').forEach(img => {
-        imageObserver.observe(img);
-    });
-}
-
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', function() {
-    // Add loaded class to body
-    document.body.classList.add('loaded');
-    
-    // Initialize tooltips if needed
-    initializeTooltips();
-    
-    // Initialize counters
-    initializeCounters();
-});
-
-// Initialize tooltips
-function initializeTooltips() {
-    const tooltipElements = document.querySelectorAll('[data-tooltip]');
-    tooltipElements.forEach(element => {
-        element.addEventListener('mouseenter', function() {
-            const tooltip = document.createElement('div');
-            tooltip.className = 'absolute bg-gray-800 text-white text-sm px-2 py-1 rounded z-50';
-            tooltip.textContent = this.getAttribute('data-tooltip');
-            document.body.appendChild(tooltip);
-            
-            const rect = this.getBoundingClientRect();
-            tooltip.style.left = rect.left + (rect.width / 2) - (tooltip.offsetWidth / 2) + 'px';
-            tooltip.style.top = rect.top - tooltip.offsetHeight - 5 + 'px';
-            
-            this.addEventListener('mouseleave', function() {
-                tooltip.remove();
-            }, { once: true });
-        });
-    });
-}
-
-// Initialize animated counters
-function initializeCounters() {
-    const counters = document.querySelectorAll('.counter');
-    const speed = 200;
-    
-    counters.forEach(counter => {
-        const animate = () => {
-            const value = +counter.getAttribute('data-target');
-            const data = +counter.innerText;
-            const time = value / speed;
-            
-            if (data < value) {
-                counter.innerText = Math.ceil(data + time);
-                setTimeout(animate, 1);
-            } else {
-                counter.innerText = value;
-            }
-        };
-        
-        // Start animation when element is in viewport
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    animate();
-                    observer.unobserve(entry.target);
-                }
-            });
-        });
-        
-        observer.observe(counter);
-    });
-}
-
-// Add fade-out animation
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes fade-out {
-        from { opacity: 1; transform: translateX(0); }
-        to { opacity: 0; transform: translateX(100px); }
-    }
-    .loaded {
-        opacity: 1;
-    }
-    img.loaded {
-        opacity: 1;
-        transition: opacity 0.3s ease;
-    }
-`;
-document.head.appendChild(style);
