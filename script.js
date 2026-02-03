@@ -229,7 +229,7 @@ document.querySelectorAll('.image-card').forEach(card => {
     });
 });
 
-// Create enhanced lightbox with zoom controls
+// Create enhanced lightbox with zoom controls - Mobile Optimized
 function createEnhancedLightbox(src, alt) {
     // Remove existing lightbox
     const existingLightbox = document.querySelector('.lightbox');
@@ -268,53 +268,119 @@ function createEnhancedLightbox(src, alt) {
     let currentScale = 1;
     let isDragging = false;
     let startX, startY, scrollLeft, scrollTop;
+    let initialX = 0, initialY = 0;
+    let xOffset = 0, yOffset = 0;
     
-    // Zoom functionality
-    document.getElementById('zoomIn').addEventListener('click', () => {
-        currentScale = Math.min(currentScale + 0.25, 3);
-        updateZoom();
-    });
+    // Zoom functionality - Optimized for mobile
+    const zoomInBtn = document.getElementById('zoomIn');
+    const zoomOutBtn = document.getElementById('zoomOut');
+    const zoomResetBtn = document.getElementById('zoomReset');
     
-    document.getElementById('zoomOut').addEventListener('click', () => {
-        currentScale = Math.max(currentScale - 0.25, 0.5);
-        updateZoom();
-    });
+    if (zoomInBtn) {
+        zoomInBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            currentScale = Math.min(currentScale + 0.25, 3);
+            updateZoom();
+        });
+    }
     
-    document.getElementById('zoomReset').addEventListener('click', () => {
-        currentScale = 1;
-        updateZoom();
-    });
+    if (zoomOutBtn) {
+        zoomOutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            currentScale = Math.max(currentScale - 0.25, 0.5);
+            updateZoom();
+        });
+    }
+    
+    if (zoomResetBtn) {
+        zoomResetBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            currentScale = 1;
+            xOffset = 0;
+            yOffset = 0;
+            updateZoom();
+        });
+    }
     
     function updateZoom() {
-        lightboxImg.style.transform = `scale(${currentScale})`;
+        lightboxImg.style.transform = `scale(${currentScale}) translate(${xOffset}px, ${yOffset}px)`;
         lightboxImg.style.cursor = currentScale > 1 ? 'grab' : 'default';
     }
     
-    // Mouse wheel zoom
-    lightbox.addEventListener('wheel', (e) => {
+    // Touch events for mobile
+    let touchStartDistance = 0;
+    let touchStartScale = 1;
+    
+    lightboxImg.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+            isDragging = true;
+            startX = e.touches[0].clientX - xOffset;
+            startY = e.touches[0].clientY - yOffset;
+            lightboxImg.style.cursor = 'grabbing';
+        } else if (e.touches.length === 2) {
+            // Pinch to zoom
+            touchStartDistance = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+            );
+            touchStartScale = currentScale;
+        }
+    }, { passive: false });
+    
+    lightboxImg.addEventListener('touchmove', (e) => {
         e.preventDefault();
-        const delta = e.deltaY > 0 ? -0.1 : 0.1;
-        currentScale = Math.max(0.5, Math.min(3, currentScale + delta));
-        updateZoom();
+        
+        if (e.touches.length === 1 && currentScale > 1) {
+            // Single finger drag
+            if (isDragging) {
+                const currentX = e.touches[0].clientX;
+                const currentY = e.touches[0].clientY;
+                xOffset = currentX - startX;
+                yOffset = currentY - startY;
+                updateZoom();
+            }
+        } else if (e.touches.length === 2) {
+            // Pinch to zoom
+            const currentDistance = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+            );
+            
+            if (touchStartDistance > 0) {
+                currentScale = Math.max(0.5, Math.min(3, touchStartScale * (currentDistance / touchStartDistance)));
+                updateZoom();
+            }
+        }
+    }, { passive: false });
+    
+    lightboxImg.addEventListener('touchend', (e) => {
+        isDragging = false;
+        lightboxImg.style.cursor = currentScale > 1 ? 'grab' : 'default';
+        touchStartDistance = 0;
     });
     
-    // Drag functionality
+    // Mouse events for desktop - Fixed
     lightboxImg.addEventListener('mousedown', (e) => {
         if (currentScale > 1) {
             isDragging = true;
-            startX = e.pageX - lightboxImg.offsetLeft;
-            startY = e.pageY - lightboxImg.offsetTop;
+            startX = e.clientX - xOffset;
+            startY = e.clientY - yOffset;
             lightboxImg.style.cursor = 'grabbing';
+            e.preventDefault();
         }
     });
     
     lightboxImg.addEventListener('mousemove', (e) => {
         if (!isDragging || currentScale <= 1) return;
         e.preventDefault();
-        const x = e.pageX - startX;
-        const y = e.pageY - startY;
-        lightboxImg.style.left = `${x}px`;
-        lightboxImg.style.top = `${y}px`;
+        const currentX = e.clientX;
+        const currentY = e.clientY;
+        xOffset = currentX - startX;
+        yOffset = currentY - startY;
+        updateZoom();
     });
     
     lightboxImg.addEventListener('mouseup', () => {
@@ -327,11 +393,21 @@ function createEnhancedLightbox(src, alt) {
         lightboxImg.style.cursor = currentScale > 1 ? 'grab' : 'default';
     });
     
-    // Close lightbox
+    // Mouse wheel zoom - Fixed
+    lightbox.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const delta = e.deltaY > 0 ? -0.1 : 0.1;
+        currentScale = Math.max(0.5, Math.min(3, currentScale + delta));
+        updateZoom();
+    });
+    
+    // Close lightbox - Enhanced for mobile
     function closeLightbox() {
         lightbox.classList.remove('active');
         setTimeout(() => {
-            lightbox.remove();
+            if (lightbox.parentNode) {
+                lightbox.remove();
+            }
         }, 300);
     }
     
@@ -344,6 +420,17 @@ function createEnhancedLightbox(src, alt) {
     // Close on escape key
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
+            closeLightbox();
+        }
+    });
+    
+    // Prevent body scroll when lightbox is open
+    document.body.style.overflow = 'hidden';
+    
+    // Restore body scroll when lightbox closes
+    lightbox.addEventListener('click', function(e) {
+        if (e.target === lightbox || e.target.closest('.lightbox-close')) {
+            document.body.style.overflow = '';
             closeLightbox();
         }
     });
