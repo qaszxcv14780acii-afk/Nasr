@@ -245,8 +245,26 @@ html {
     }
 }
 
-/* Mobile Performance Optimizations */
+/* Mobile Performance Optimizations - FIXED */
 @media (max-width: 768px) {
+    /* Keep content visible on mobile */
+    .scroll-animate,
+    .scroll-animate-left,
+    .scroll-animate-right,
+    .scroll-animate-scale {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+    
+    .scroll-animate.visible,
+    .scroll-animate-left.visible,
+    .scroll-animate-right.visible,
+    .scroll-animate-scale.visible {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+    
     /* Disable heavy animations for performance */
     .animate-float {
         animation: none !important;
@@ -259,24 +277,6 @@ html {
     .btn-shimmer {
         animation: none !important;
         background: linear-gradient(135deg, #10b981, #059669);
-    }
-    
-    /* Faster scroll animations */
-    .scroll-animate,
-    .scroll-animate-left,
-    .scroll-animate-right,
-    .scroll-animate-scale {
-        transition: all 0.2s ease-out !important;
-        transform: none !important;
-        opacity: 1 !important;
-    }
-    
-    .scroll-animate.visible,
-    .scroll-animate-left.visible,
-    .scroll-animate-right.visible,
-    .scroll-animate-scale.visible {
-        transform: none !important;
-        opacity: 1 !important;
     }
     
     /* Optimize hero section */
@@ -294,7 +294,7 @@ html {
     /* Faster image loading */
     img {
         transform: none !important;
-        transition: none !important;
+        transition: transform 0.2s ease !important;
     }
     
     .gallery-item:hover img {
@@ -343,30 +343,21 @@ html {
 }
 
 @media (max-width: 480px) {
-    /* Ultra-fast animations for small mobile */
+    /* Keep content visible on small mobile */
     .scroll-animate,
     .scroll-animate-left,
     .scroll-animate-right,
     .scroll-animate-scale {
-        transition: all 0.1s ease-out !important;
         opacity: 1 !important;
-        transform: none !important;
-    }
-    
-    /* Disable all hover effects for performance */
-    .image-card:hover,
-    .gallery-item:hover,
-    .social-icon:hover,
-    button:hover {
         transform: none !important;
         transition: none !important;
     }
     
-    /* Optimize image hover */
+    /* Optimize image hover - KEEP WORKING */
     .gallery-item:hover img,
     .image-card:hover img {
-        transform: scale(1.02) !important;
-        transition: transform 0.1s ease !important;
+        transform: scale(1.05) !important;
+        transition: transform 0.2s ease !important;
     }
     
     /* Disable complex animations */
@@ -383,13 +374,17 @@ html {
         transition: none !important;
     }
     
-    /* Optimize lightbox */
+    /* Optimize lightbox - KEEP WORKING */
     .lightbox img {
-        transition: none !important;
+        transition: transform 0.2s ease !important;
     }
     
     .zoom-btn {
-        transition: none !important;
+        transition: all 0.2s ease !important;
+    }
+    
+    .zoom-btn:hover {
+        transform: scale(1.1) !important;
     }
 }
 
