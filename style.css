@@ -145,25 +145,96 @@ html {
     opacity: 1;
 }
 
-/* Enhanced Gallery Styles */
+/* Enhanced Gallery Styles - Mobile Optimized */
 .gallery-item {
     position: relative;
     overflow: hidden;
     border-radius: 12px;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .gallery-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 .gallery-item img {
+    width: 100%;
+    height: 192px;
+    object-fit: cover;
     transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
 }
 
 .gallery-item:hover img {
-    transform: scale(1.15);
+    transform: scale(1.1);
+}
+
+.gallery-item .absolute {
+    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+    transition: all 0.3s ease;
+}
+
+.gallery-item .absolute:hover {
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 100%);
+}
+
+/* Mobile Gallery Optimizations */
+@media (max-width: 768px) {
+    .gallery-item {
+        border-radius: 8px;
+        margin-bottom: 8px;
+    }
+    
+    .gallery-item img {
+        height: 160px;
+    }
+    
+    .gallery-item:hover {
+        transform: translateY(-2px);
+    }
+    
+    .gallery-item:hover img {
+        transform: scale(1.05);
+    }
+}
+
+@media (max-width: 480px) {
+    .gallery-item {
+        border-radius: 6px;
+        margin-bottom: 6px;
+    }
+    
+    .gallery-item img {
+        height: 140px;
+    }
+    
+    .gallery-item .absolute i {
+        font-size: 1.5rem !important;
+    }
+}
+
+/* Loading animation for images */
+.gallery-item img {
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 /* Enhanced Lightbox - Mobile Optimized */
