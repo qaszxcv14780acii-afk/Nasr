@@ -266,7 +266,7 @@ function showError(form, message) {
     }, timeout);
 }
 
-// FIXED: Enhanced Lightbox Function
+// FIXED: Enhanced Lightbox Function - MOBILE COMPATIBLE
 function createEnhancedLightbox(src, alt) {
     // Remove existing lightbox
     const existingLightbox = document.querySelector('.lightbox');
@@ -283,21 +283,24 @@ function createEnhancedLightbox(src, alt) {
     img.src = src;
     img.alt = alt;
     
-    // Create controls
+    // Create controls with better mobile support
     const zoomInBtn = document.createElement('button');
     zoomInBtn.className = 'zoom-btn zoom-in';
     zoomInBtn.innerHTML = '+';
     zoomInBtn.setAttribute('aria-label', 'تكبير');
+    zoomInBtn.setAttribute('title', 'تكبير');
     
     const zoomOutBtn = document.createElement('button');
     zoomOutBtn.className = 'zoom-btn zoom-out';
-    zoomOutBtn.innerHTML = '-';
+    zoomOutBtn.innerHTML = '−';
     zoomOutBtn.setAttribute('aria-label', 'تصغير');
+    zoomOutBtn.setAttribute('title', 'تصغير');
     
     const closeBtn = document.createElement('button');
     closeBtn.className = 'zoom-btn close-btn';
     closeBtn.innerHTML = '×';
     closeBtn.setAttribute('aria-label', 'إغلاق');
+    closeBtn.setAttribute('title', 'إغلاق');
     
     // Add elements to lightbox
     lightbox.appendChild(img);
@@ -311,7 +314,7 @@ function createEnhancedLightbox(src, alt) {
     // State variables
     let scale = 1;
     let isDragging = false;
-    let startX, startY, scrollLeft, scrollTop;
+    let startX, startY;
     let initialPinchDistance = 0;
     
     // Show lightbox with animation
@@ -325,34 +328,43 @@ function createEnhancedLightbox(src, alt) {
         img.style.transform = `scale(${scale})`;
     }
     
-    // Zoom controls
-    zoomInBtn.addEventListener('click', (e) => {
+    // Zoom controls with better mobile support
+    function handleZoomIn(e) {
+        e.preventDefault();
         e.stopPropagation();
-        updateZoom(scale + 0.2);
-    });
+        updateZoom(scale + 0.3);
+    }
     
-    zoomOutBtn.addEventListener('click', (e) => {
+    function handleZoomOut(e) {
+        e.preventDefault();
         e.stopPropagation();
-        updateZoom(scale - 0.2);
-    });
+        updateZoom(scale - 0.3);
+    }
+    
+    zoomInBtn.addEventListener('click', handleZoomIn);
+    zoomInBtn.addEventListener('touchstart', handleZoomIn);
+    
+    zoomOutBtn.addEventListener('click', handleZoomOut);
+    zoomOutBtn.addEventListener('touchstart', handleZoomOut);
     
     // Mouse wheel zoom
     lightbox.addEventListener('wheel', (e) => {
         e.preventDefault();
-        const delta = e.deltaY > 0 ? -0.1 : 0.1;
+        const delta = e.deltaY > 0 ? -0.2 : 0.2;
         updateZoom(scale + delta);
     });
     
-    // Drag functionality
+    // Drag functionality - MOBILE OPTIMIZED
     function startDrag(e) {
         if (scale > 1) {
             isDragging = true;
             img.style.cursor = 'grabbing';
             
+            // Handle both mouse and touch events
             if (e.type === 'mousedown') {
                 startX = e.pageX - img.offsetLeft;
                 startY = e.pageY - img.offsetTop;
-            } else if (e.type === 'touchstart') {
+            } else if (e.type === 'touchstart' && e.touches.length === 1) {
                 startX = e.touches[0].pageX - img.offsetLeft;
                 startY = e.touches[0].pageY - img.offsetTop;
             }
@@ -367,9 +379,11 @@ function createEnhancedLightbox(src, alt) {
         if (e.type === 'mousemove') {
             x = e.pageX;
             y = e.pageY;
-        } else if (e.type === 'touchmove') {
+        } else if (e.type === 'touchmove' && e.touches.length === 1) {
             x = e.touches[0].pageX;
             y = e.touches[0].pageY;
+        } else {
+            return;
         }
         
         const walkX = (x - startX) * 0.5;
@@ -388,20 +402,21 @@ function createEnhancedLightbox(src, alt) {
     document.addEventListener('mousemove', drag);
     document.addEventListener('mouseup', endDrag);
     
-    // Touch events for mobile
-    img.addEventListener('touchstart', startDrag);
-    document.addEventListener('touchmove', drag);
+    // Touch events for mobile - IMPROVED
+    img.addEventListener('touchstart', startDrag, { passive: false });
+    document.addEventListener('touchmove', drag, { passive: false });
     document.addEventListener('touchend', endDrag);
     
-    // Pinch to zoom for mobile
+    // Pinch to zoom for mobile - FIXED
     lightbox.addEventListener('touchstart', (e) => {
         if (e.touches.length === 2) {
+            e.preventDefault();
             initialPinchDistance = Math.hypot(
                 e.touches[0].pageX - e.touches[1].pageX,
                 e.touches[0].pageY - e.touches[1].pageY
             );
         }
-    });
+    }, { passive: false });
     
     lightbox.addEventListener('touchmove', (e) => {
         if (e.touches.length === 2) {
@@ -415,17 +430,28 @@ function createEnhancedLightbox(src, alt) {
             updateZoom(scale + scaleDelta);
             initialPinchDistance = currentDistance;
         }
-    });
+    }, { passive: false });
     
-    // Close functions
+    // Close functions - MOBILE OPTIMIZED
     function closeLightbox() {
         lightbox.classList.remove('active');
         setTimeout(() => {
-            lightbox.remove();
-        }, 200);
+            if (lightbox.parentNode) {
+                lightbox.remove();
+            }
+        }, 300);
     }
     
-    closeBtn.addEventListener('click', closeLightbox);
+    function handleClose(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        closeLightbox();
+    }
+    
+    closeBtn.addEventListener('click', handleClose);
+    closeBtn.addEventListener('touchstart', handleClose);
+    
+    // Close on background click - MOBILE FRIENDLY
     lightbox.addEventListener('click', (e) => {
         if (e.target === lightbox) {
             closeLightbox();
@@ -438,16 +464,29 @@ function createEnhancedLightbox(src, alt) {
             if (e.key === 'Escape') {
                 closeLightbox();
             } else if (e.key === '+' || e.key === '=') {
-                updateZoom(scale + 0.2);
+                updateZoom(scale + 0.3);
             } else if (e.key === '-' || e.key === '_') {
-                updateZoom(scale - 0.2);
+                updateZoom(scale - 0.3);
             }
         }
     });
     
-    // Prevent context menu on lightbox
+    // Prevent context menu and default behaviors
     lightbox.addEventListener('contextmenu', (e) => {
         e.preventDefault();
+    });
+    
+    // Prevent double-tap zoom on mobile
+    lightbox.addEventListener('touchend', (e) => {
+        e.preventDefault();
+    }, { passive: false });
+    
+    // Handle orientation change
+    window.addEventListener('orientationchange', () => {
+        setTimeout(() => {
+            // Reset zoom on orientation change
+            updateZoom(1);
+        }, 100);
     });
 }
 
