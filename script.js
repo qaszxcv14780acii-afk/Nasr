@@ -1,4 +1,4 @@
-// JavaScript for Qat Agency Website - Fixed Mobile Issues
+// JavaScript for Qat Agency Website - Fixed Performance and Lightbox
 
 // Mobile Menu Toggle
 const mobileMenuBtn = document.getElementById('mobileMenuBtn');
@@ -10,7 +10,6 @@ if (mobileMenuBtn && mobileMenu) {
         mobileMenu.classList.toggle('mobile-menu-enter');
     });
 
-    // Close mobile menu when clicking on a link
     const mobileMenuLinks = mobileMenu.querySelectorAll('a');
     mobileMenuLinks.forEach(link => {
         link.addEventListener('click', () => {
@@ -19,7 +18,7 @@ if (mobileMenuBtn && mobileMenu) {
     });
 }
 
-// Smooth scrolling for navigation links - Fixed for mobile
+// Smooth scrolling for navigation links - Optimized
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
@@ -33,7 +32,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Active navigation highlighting - Fixed
+// Active navigation highlighting - Optimized with throttling
 let scrollTimeout;
 window.addEventListener('scroll', () => {
     if (scrollTimeout) {
@@ -57,16 +56,15 @@ window.addEventListener('scroll', () => {
                 link.classList.add('active');
             }
         });
-    }, 100);
+    }, 50); // Faster throttling
 });
 
-// Fixed: Show content immediately on mobile
+// Performance-optimized animations
 document.addEventListener('DOMContentLoaded', () => {
-    // Make all content visible immediately on mobile
     const isMobile = window.innerWidth <= 768;
     
     if (isMobile) {
-        // Show all animated content immediately
+        // Show content immediately on mobile
         const allAnimatedElements = document.querySelectorAll('.scroll-animate, .scroll-animate-left, .scroll-animate-right, .scroll-animate-scale');
         allAnimatedElements.forEach(el => {
             el.classList.add('visible');
@@ -74,10 +72,10 @@ document.addEventListener('DOMContentLoaded', () => {
             el.style.transform = 'none';
         });
     } else {
-        // Desktop animations
+        // Optimized desktop animations
         const observerOptions = {
             threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
+            rootMargin: '0px 0px -30px 0px'
         };
 
         const animationObserver = new IntersectionObserver((entries) => {
@@ -89,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         elements.forEach((el, index) => {
                             setTimeout(() => {
                                 el.classList.add('visible');
-                            }, index * 50);
+                            }, index * 30); // Faster stagger
                         });
                     } else {
                         entry.target.classList.add('visible');
@@ -107,38 +105,44 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Disable parallax on mobile for performance
+// Optimized parallax
 const isMobile = window.innerWidth <= 768;
 if (!isMobile) {
     let parallaxElement = document.querySelector('#home img');
     if (parallaxElement) {
-        window.addEventListener('scroll', () => {
+        let ticking = false;
+        function updateParallax() {
             const scrolled = window.pageYOffset;
-            const speed = 0.5;
+            const speed = 0.3; // Reduced speed for performance
             
-            if (parallax && scrolled < window.innerHeight) {
+            if (scrolled < window.innerHeight) {
                 parallaxElement.style.transform = `translateY(${scrolled * speed}px)`;
+            }
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(updateParallax);
+                ticking = true;
             }
         });
     }
 }
 
-// Enhanced loading animations - Fixed for mobile
+// Optimized loading
 window.addEventListener('load', () => {
-    // Show content immediately on mobile
     if (isMobile) {
         document.body.style.opacity = '1';
         
-        // Show social icons immediately
         const socialIcons = document.querySelectorAll('.social-icon');
         socialIcons.forEach(icon => {
             icon.style.opacity = '1';
             icon.style.transform = 'translateY(0)';
         });
     } else {
-        // Desktop animations
         document.body.style.opacity = '0';
-        document.body.style.transition = 'opacity 0.3s ease-in';
+        document.body.style.transition = 'opacity 0.2s ease-in';
         
         setTimeout(() => {
             document.body.style.opacity = '1';
@@ -150,27 +154,25 @@ window.addEventListener('load', () => {
             icon.style.transform = 'translateY(20px)';
             
             setTimeout(() => {
-                icon.style.transition = 'all 0.3s ease';
+                icon.style.transition = 'all 0.2s ease';
                 icon.style.opacity = '1';
                 icon.style.transform = 'translateY(0)';
-            }, 500 + (index * 100));
+            }, 300 + (index * 50)); // Faster animations
         });
     }
 });
 
-// Contact Form Validation and Submission with WhatsApp - Fixed
+// Contact Form - Optimized
 const contactForm = document.getElementById('contactForm');
 if (contactForm) {
     contactForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        // Get form values
         const name = document.getElementById('name').value.trim();
         const phone = document.getElementById('phone').value.trim();
         const email = document.getElementById('email').value.trim();
         const message = document.getElementById('message').value.trim();
         
-        // Validation
         let isValid = true;
         let errorMessage = '';
         
@@ -188,7 +190,6 @@ if (contactForm) {
             errorMessage = 'الرجاء كتابة رسالة تحتوي على 10 أحرف على الأقل';
         }
         
-        // Remove any existing messages
         const existingMessage = document.querySelector('.success-message, .error-message');
         if (existingMessage) {
             existingMessage.remove();
@@ -199,32 +200,21 @@ if (contactForm) {
             return;
         }
         
-        // Create WhatsApp message
         const whatsappMessage = `🔔 رسالة جديدة من موقع وكالة نصر الدميني\n\n👤 اسم العميل: ${name}\n📞 رقم الهاتف: ${phone}\n📧 البريد الإلكتروني: ${email}\n\n💬 الرسالة:\n${message}`;
-        
-        // Create WhatsApp link
         const whatsappLink = `https://wa.me/967771167391?text=${encodeURIComponent(whatsappMessage)}`;
         
-        // Show loading state
         const submitBtn = this.querySelector('button[type="submit"]');
         const originalText = submitBtn.innerHTML;
         submitBtn.innerHTML = '<i class="fab fa-whatsapp text-xl ml-2"></i> جاري فتح WhatsApp...';
         submitBtn.disabled = true;
         
-        // Open WhatsApp
         setTimeout(() => {
             window.open(whatsappLink, '_blank');
-            
-            // Show success message
             showSuccess(this, 'تم فتح WhatsApp بنجاح! يمكنك الآن إرسال الرسالة.');
-            
-            // Reset form
             this.reset();
-            
-            // Reset button
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
-        }, isMobile ? 500 : 1500);
+        }, isMobile ? 300 : 800); // Faster response
     });
 }
 
@@ -239,7 +229,7 @@ function validateEmail(email) {
     return emailRegex.test(email);
 }
 
-// Show success message - Fixed
+// Optimized message functions
 function showSuccess(form, message) {
     const successDiv = document.createElement('div');
     successDiv.className = 'success-message bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4';
@@ -252,14 +242,12 @@ function showSuccess(form, message) {
     
     form.insertBefore(successDiv, form.firstChild);
     
-    // Auto remove
-    const timeout = isMobile ? 3000 : 5000;
+    const timeout = isMobile ? 2000 : 3000;
     setTimeout(() => {
         successDiv.remove();
     }, timeout);
 }
 
-// Show error message - Fixed
 function showError(form, message) {
     const errorDiv = document.createElement('div');
     errorDiv.className = 'error-message bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4';
@@ -272,14 +260,198 @@ function showError(form, message) {
     
     form.insertBefore(errorDiv, form.firstChild);
     
-    // Auto remove
-    const timeout = isMobile ? 3000 : 5000;
+    const timeout = isMobile ? 2000 : 3000;
     setTimeout(() => {
         errorDiv.remove();
     }, timeout);
 }
 
-// Enhanced lightbox for product cards - Fixed for mobile
+// FIXED: Enhanced Lightbox Function
+function createEnhancedLightbox(src, alt) {
+    // Remove existing lightbox
+    const existingLightbox = document.querySelector('.lightbox');
+    if (existingLightbox) {
+        existingLightbox.remove();
+    }
+
+    // Create lightbox container
+    const lightbox = document.createElement('div');
+    lightbox.className = 'lightbox';
+    
+    // Create image
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = alt;
+    
+    // Create controls
+    const zoomInBtn = document.createElement('button');
+    zoomInBtn.className = 'zoom-btn zoom-in';
+    zoomInBtn.innerHTML = '+';
+    zoomInBtn.setAttribute('aria-label', 'تكبير');
+    
+    const zoomOutBtn = document.createElement('button');
+    zoomOutBtn.className = 'zoom-btn zoom-out';
+    zoomOutBtn.innerHTML = '-';
+    zoomOutBtn.setAttribute('aria-label', 'تصغير');
+    
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'zoom-btn close-btn';
+    closeBtn.innerHTML = '×';
+    closeBtn.setAttribute('aria-label', 'إغلاق');
+    
+    // Add elements to lightbox
+    lightbox.appendChild(img);
+    lightbox.appendChild(zoomInBtn);
+    lightbox.appendChild(zoomOutBtn);
+    lightbox.appendChild(closeBtn);
+    
+    // Add to body
+    document.body.appendChild(lightbox);
+    
+    // State variables
+    let scale = 1;
+    let isDragging = false;
+    let startX, startY, scrollLeft, scrollTop;
+    let initialPinchDistance = 0;
+    
+    // Show lightbox with animation
+    requestAnimationFrame(() => {
+        lightbox.classList.add('active');
+    });
+    
+    // Zoom functions
+    function updateZoom(newScale) {
+        scale = Math.max(0.5, Math.min(3, newScale));
+        img.style.transform = `scale(${scale})`;
+    }
+    
+    // Zoom controls
+    zoomInBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        updateZoom(scale + 0.2);
+    });
+    
+    zoomOutBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        updateZoom(scale - 0.2);
+    });
+    
+    // Mouse wheel zoom
+    lightbox.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const delta = e.deltaY > 0 ? -0.1 : 0.1;
+        updateZoom(scale + delta);
+    });
+    
+    // Drag functionality
+    function startDrag(e) {
+        if (scale > 1) {
+            isDragging = true;
+            img.style.cursor = 'grabbing';
+            
+            if (e.type === 'mousedown') {
+                startX = e.pageX - img.offsetLeft;
+                startY = e.pageY - img.offsetTop;
+            } else if (e.type === 'touchstart') {
+                startX = e.touches[0].pageX - img.offsetLeft;
+                startY = e.touches[0].pageY - img.offsetTop;
+            }
+        }
+    }
+    
+    function drag(e) {
+        if (!isDragging || scale <= 1) return;
+        e.preventDefault();
+        
+        let x, y;
+        if (e.type === 'mousemove') {
+            x = e.pageX;
+            y = e.pageY;
+        } else if (e.type === 'touchmove') {
+            x = e.touches[0].pageX;
+            y = e.touches[0].pageY;
+        }
+        
+        const walkX = (x - startX) * 0.5;
+        const walkY = (y - startY) * 0.5;
+        
+        img.style.transform = `scale(${scale}) translate(${walkX}px, ${walkY}px)`;
+    }
+    
+    function endDrag() {
+        isDragging = false;
+        img.style.cursor = 'grab';
+    }
+    
+    // Mouse events
+    img.addEventListener('mousedown', startDrag);
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('mouseup', endDrag);
+    
+    // Touch events for mobile
+    img.addEventListener('touchstart', startDrag);
+    document.addEventListener('touchmove', drag);
+    document.addEventListener('touchend', endDrag);
+    
+    // Pinch to zoom for mobile
+    lightbox.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 2) {
+            initialPinchDistance = Math.hypot(
+                e.touches[0].pageX - e.touches[1].pageX,
+                e.touches[0].pageY - e.touches[1].pageY
+            );
+        }
+    });
+    
+    lightbox.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 2) {
+            e.preventDefault();
+            const currentDistance = Math.hypot(
+                e.touches[0].pageX - e.touches[1].pageX,
+                e.touches[0].pageY - e.touches[1].pageY
+            );
+            
+            const scaleDelta = (currentDistance - initialPinchDistance) * 0.01;
+            updateZoom(scale + scaleDelta);
+            initialPinchDistance = currentDistance;
+        }
+    });
+    
+    // Close functions
+    function closeLightbox() {
+        lightbox.classList.remove('active');
+        setTimeout(() => {
+            lightbox.remove();
+        }, 200);
+    }
+    
+    closeBtn.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) {
+            closeLightbox();
+        }
+    });
+    
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (lightbox.classList.contains('active')) {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            } else if (e.key === '+' || e.key === '=') {
+                updateZoom(scale + 0.2);
+            } else if (e.key === '-' || e.key === '_') {
+                updateZoom(scale - 0.2);
+            }
+        }
+    });
+    
+    // Prevent context menu on lightbox
+    lightbox.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+    });
+}
+
+// Attach lightbox to images
 document.querySelectorAll('.image-card').forEach(card => {
     card.addEventListener('click', function(e) {
         if (!e.target.closest('button')) {
@@ -289,7 +461,6 @@ document.querySelectorAll('.image-card').forEach(card => {
     });
 });
 
-// Enhanced gallery lightbox - Fixed for mobile
 document.querySelectorAll('.gallery-item').forEach(item => {
     item.addEventListener('click', function() {
         const img = this.querySelector('img');
@@ -297,14 +468,13 @@ document.querySelectorAll('.gallery-item').forEach(item => {
     });
 });
 
-// Scroll to top button - Fixed
+// Optimized scroll to top button
 const scrollToTopBtn = document.createElement('button');
 scrollToTopBtn.innerHTML = '<i class="fas fa-arrow-up"></i>';
-scrollToTopBtn.className = 'fixed bottom-8 left-8 bg-green-600 text-white w-12 h-12 rounded-full shadow-lg hover:bg-green-700 transition-all duration-300 opacity-0 invisible z-40';
+scrollToTopBtn.className = 'fixed bottom-8 left-8 bg-green-600 text-white w-12 h-12 rounded-full shadow-lg hover:bg-green-700 transition-all duration-200 opacity-0 invisible z-40';
 scrollToTopBtn.setAttribute('aria-label', 'العودة للأعلى');
 document.body.appendChild(scrollToTopBtn);
 
-// Show/hide scroll to top button - Fixed
 let scrollButtonTimeout;
 window.addEventListener('scroll', () => {
     if (scrollButtonTimeout) {
@@ -318,10 +488,9 @@ window.addEventListener('scroll', () => {
             scrollToTopBtn.classList.add('opacity-0', 'invisible');
             scrollToTopBtn.classList.remove('opacity-100', 'visible');
         }
-    }, 100);
+    }, 50);
 });
 
-// Smooth scroll to top - Fixed
 scrollToTopBtn.addEventListener('click', () => {
     window.scrollTo({
         top: 0,

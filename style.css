@@ -388,7 +388,7 @@ html {
     }
 }
 
-/* Performance optimizations for all devices */
+/* Performance optimizations for all devices - FIXED */
 * {
     -webkit-transform: translateZ(0);
     -moz-transform: translateZ(0);
@@ -397,33 +397,34 @@ html {
     transform: translateZ(0);
 }
 
-/* Optimize image loading */
+/* Optimize image loading - FIXED */
 img {
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     -webkit-transform: translateZ(0) scale(1.0, 1.0);
     transform: translateZ(0) scale(1.0, 1.0);
+    will-change: transform;
 }
 
-/* Optimize animations */
+/* Optimize animations - FASTER */
 .animate-fade-in {
-    animation: fade-in 0.3s ease-out !important;
+    animation: fade-in 0.2s ease-out !important;
 }
 
 .animate-fade-in-delay {
-    animation: fade-in 0.3s ease-out 0.1s both !important;
+    animation: fade-in 0.2s ease-out 0.1s both !important;
 }
 
 .animate-slide-in {
-    animation: slide-in-right 0.2s ease-out !important;
+    animation: slide-in-right 0.15s ease-out !important;
 }
 
 .animate-slide-in-left {
-    animation: slide-in-left 0.2s ease-out !important;
+    animation: slide-in-left 0.15s ease-out !important;
 }
 
 .animate-scale-in {
-    animation: scale-in 0.2s ease-out !important;
+    animation: scale-in 0.15s ease-out !important;
 }
 
 /* Faster loading */
@@ -431,7 +432,7 @@ body {
     opacity: 1 !important;
 }
 
-/* Optimize scroll performance */
+/* Optimize scroll performance - FIXED */
 html {
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
@@ -443,6 +444,196 @@ html {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
+    }
+}
+
+/* Desktop Performance Optimizations - FIXED */
+@media (min-width: 769px) {
+    /* Faster animations on desktop */
+    .animate-float {
+        animation: float 3s ease-in-out infinite;
+    }
+    
+    .animate-pulse-slow {
+        animation: pulse 2s ease-in-out infinite;
+    }
+    
+    /* Optimize scroll animations */
+    .scroll-animate,
+    .scroll-animate-left,
+    .scroll-animate-right,
+    .scroll-animate-scale {
+        transition: all 0.2s ease-out !important;
+    }
+    
+    /* Optimize hero section */
+    .hero-content {
+        animation: none !important;
+        transform: none !important;
+    }
+    
+    /* Optimize gradient animation */
+    #home::before {
+        animation: gradient-shift 4s ease-in-out infinite;
+    }
+    
+    /* Faster image loading */
+    img {
+        transition: transform 0.2s ease !important;
+    }
+    
+    .gallery-item:hover img {
+        transform: scale(1.05) !important;
+        transition: transform 0.2s ease !important;
+    }
+    
+    .image-card:hover img {
+        transform: scale(1.05) !important;
+        transition: transform 0.2s ease !important;
+    }
+    
+    /* Optimize card animations */
+    .image-card:hover {
+        transform: translateY(-3px) !important;
+        transition: all 0.2s ease !important;
+    }
+    
+    .gallery-item:hover {
+        transform: translateY(-3px) !important;
+        transition: all 0.2s ease !important;
+    }
+    
+    /* Optimize social icons */
+    .social-icon {
+        transition: all 0.2s ease !important;
+    }
+    
+    .social-icon:hover {
+        transform: translateY(-3px) scale(1.05) !important;
+    }
+    
+    /* Faster button animations */
+    button, .btn-primary, .btn-secondary {
+        transition: all 0.2s ease !important;
+    }
+    
+    button:hover, .btn-primary:hover, .btn-secondary:hover {
+        transform: translateY(-2px) !important;
+    }
+    
+    /* Optimize parallax */
+    #home img {
+        transition: transform 0.1s ease-out !important;
+    }
+}
+
+/* Lightbox Optimizations - FIXED */
+.lightbox {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: rgba(0, 0, 0, 0.9) !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    z-index: 9999 !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: opacity 0.2s ease, visibility 0.2s ease !important;
+}
+
+.lightbox.active {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.lightbox img {
+    max-width: 90% !important;
+    max-height: 90% !important;
+    object-fit: contain !important;
+    border-radius: 8px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+    transition: transform 0.2s ease !important;
+    cursor: grab !important;
+    user-select: none !important;
+    -webkit-user-drag: none !important;
+    -khtml-user-drag: none !important;
+    -moz-user-drag: none !important;
+    -o-user-drag: none !important;
+}
+
+.lightbox img:active {
+    cursor: grabbing !important;
+}
+
+.zoom-btn {
+    position: absolute !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    color: #333 !important;
+    border: none !important;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    cursor: pointer !important;
+    font-size: 18px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s ease !important;
+    z-index: 10000 !important;
+}
+
+.zoom-btn:hover {
+    background: white !important;
+    transform: scale(1.1) !important;
+}
+
+.zoom-in {
+    top: 20px !important;
+    right: 20px !important;
+}
+
+.zoom-out {
+    top: 70px !important;
+    right: 20px !important;
+}
+
+.close-btn {
+    top: 20px !important;
+    left: 20px !important;
+    background: rgba(255, 67, 67, 0.9) !important;
+    color: white !important;
+}
+
+.close-btn:hover {
+    background: #ff3333 !important;
+}
+
+/* Touch optimizations for mobile */
+@media (max-width: 768px) {
+    .zoom-btn {
+        width: 50px !important;
+        height: 50px !important;
+        font-size: 20px !important;
+    }
+    
+    .zoom-in {
+        top: 10px !important;
+        right: 10px !important;
+    }
+    
+    .zoom-out {
+        top: 70px !important;
+        right: 10px !important;
+    }
+    
+    .close-btn {
+        top: 10px !important;
+        left: 10px !important;
+        width: 50px !important;
+        height: 50px !important;
     }
 }
 
