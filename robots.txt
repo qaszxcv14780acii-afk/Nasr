@@ -1,0 +1,27 @@
+# ملف robots.txt لموقع وكالة ناصر الدميني
+# لل قات يمني أصيل
+
+User-agent: *
+Allow: /
+
+#Allow: /#about
+#Allow: /#products
+#Allow: /#gallery
+#Allow: /#contact
+
+Sitemap: https://qat-agency.com/sitemap.xml
+
+# منع فهرسة الصفحات غير الضرورية
+Disallow: /cgi-bin/
+Disallow: /tmp/
+Disallow: /private/
+
+# ملفات CSS و JS يمكن فهرستها لتحسين SEO
+Allow: /*.css$
+Allow: /*.js$
+
+# تحسين أداء الموقع
+Host: https://qat-agency.com
+
+# معلومات الاتصال لمشرفي المواقع
+Contact: admin@qat-agency.com
