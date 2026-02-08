@@ -100,15 +100,19 @@ function initActiveNavHighlight() {
 
   // Throttle the scroll event
   let ticking = false;
-  window.addEventListener("scroll", function () {
-    if (!ticking) {
-      window.requestAnimationFrame(function () {
-        highlightNav();
-        ticking = false;
-      });
-      ticking = true;
-    }
-  });
+  window.addEventListener(
+    "scroll",
+    function () {
+      if (!ticking) {
+        window.requestAnimationFrame(function () {
+          highlightNav();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    },
+    { passive: true },
+  );
 }
 
 /* ==================== أنيميشنات التمرير ==================== */
@@ -456,7 +460,7 @@ function initBackToTop() {
     }
   }
 
-  window.addEventListener("scroll", toggleBackToTop);
+  window.addEventListener("scroll", toggleBackToTop, { passive: true });
   toggleBackToTop();
 
   // النقر للعودة للأعلى
@@ -500,29 +504,31 @@ function initLazyLoading() {
   }
 }
 
-/* ==================== تأثير Parallax ==================== */
+/* ==================== تأثير Parallax (دسكتوب فقط) ==================== */
 function initParallax() {
-  if (window.innerWidth > 768) {
-    const heroImage = document.querySelector("#home img");
+  // لا شيء على الموبايل - يحسن الأداء بشكل كبير
+  if (window.innerWidth <= 1024) return;
 
-    if (heroImage) {
-      let ticking = false;
+  var heroImage = document.querySelector("#home img");
+  if (!heroImage) return;
 
-      window.addEventListener("scroll", function () {
-        if (!ticking) {
-          window.requestAnimationFrame(function () {
-            const scrolled = window.pageYOffset;
-            if (scrolled < window.innerHeight) {
-              heroImage.style.transform =
-                "translateY(" + scrolled * 0.3 + "px)";
-            }
-            ticking = false;
-          });
-          ticking = true;
-        }
-      });
-    }
-  }
+  var ticking = false;
+  window.addEventListener(
+    "scroll",
+    function () {
+      if (!ticking) {
+        window.requestAnimationFrame(function () {
+          var scrolled = window.pageYOffset;
+          if (scrolled < window.innerHeight) {
+            heroImage.style.transform = "translateY(" + scrolled * 0.2 + "px)";
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    },
+    { passive: true },
+  );
 }
 
 /* ==================== عداد الأرقام ==================== */
@@ -634,88 +640,12 @@ function initTestimonialsSlider() {
   }
 }
 
-/* ==================== دوال مساعدة ==================== */
-
-// Debounce function
-function debounce(func, wait) {
-  let timeout;
-  return function executedFunction() {
-    const context = this;
-    const args = arguments;
-    const later = function () {
-      timeout = null;
-      func.apply(context, args);
-    };
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
-}
-
-// Throttle function
-function throttle(func, limit) {
-  let inThrottle;
-  return function () {
-    const args = arguments;
-    const context = this;
-    if (!inThrottle) {
-      func.apply(context, args);
-      inThrottle = true;
-      setTimeout(function () {
-        inThrottle = false;
-      }, limit);
-    }
-  };
-}
-
-// Cookie functions
-function setCookie(name, value, days) {
-  const expires = new Date(Date.now() + days * 864e5).toUTCString();
-  document.cookie =
-    name +
-    "=" +
-    encodeURIComponent(value) +
-    "; expires=" +
-    expires +
-    "; path=/";
-}
-
-function getCookie(name) {
-  const value = document.cookie.split("; ").find(function (row) {
-    return row.startsWith(name + "=");
-  });
-  return value ? decodeURIComponent(value.split("=")[1]) : null;
-}
-
-// Local storage helpers
-function saveToLocalStorage(key, value) {
-  try {
-    localStorage.setItem(key, JSON.stringify(value));
-  } catch (e) {
-    console.log("Local storage not available");
-  }
-}
-
-function getFromLocalStorage(key) {
-  try {
-    const item = localStorage.getItem(key);
-    return item ? JSON.parse(item) : null;
-  } catch (e) {
-    return null;
-  }
-}
-
-/* ==================== إدارة الأخطاء ==================== */
-window.addEventListener("error", function (e) {
-  console.log("Error occurred:", e.message);
-});
-
-// معالجة الصور المعطلة
+/* ==================== معالجة الصور المعطلة ==================== */
 document.addEventListener(
   "error",
   function (e) {
     if (e.target.tagName === "IMG") {
-      e.target.style.display = "none";
-      console.log("Image failed to load:", e.target.src);
+      e.target.style.opacity = "0.3";
     }
   },
   true,

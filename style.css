@@ -32,8 +32,8 @@ html {
 }
 
 body {
-    font-family: 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', sans-serif;
-    background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #d1fae5 100%);
+    font-family: 'Cairo', 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', sans-serif;
+    background: #f0fdf4;
     color: var(--text-dark);
     line-height: 1.7;
     overflow-x: hidden;
@@ -52,6 +52,7 @@ img {
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -63,6 +64,7 @@ img {
         opacity: 0;
         transform: translateY(-30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -74,6 +76,7 @@ img {
         opacity: 0;
         transform: translateX(-50px);
     }
+
     to {
         opacity: 1;
         transform: translateX(0);
@@ -85,6 +88,7 @@ img {
         opacity: 0;
         transform: translateX(50px);
     }
+
     to {
         opacity: 1;
         transform: translateX(0);
@@ -92,21 +96,31 @@ img {
 }
 
 @keyframes pulse {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: scale(1);
     }
+
     50% {
         transform: scale(1.05);
     }
 }
 
 @keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
         transform: translateY(0);
     }
+
     40% {
         transform: translateY(-15px);
     }
+
     60% {
         transform: translateY(-7px);
     }
@@ -116,15 +130,19 @@ img {
     0% {
         background-position: -200% 0;
     }
+
     100% {
         background-position: 200% 0;
     }
 }
 
 @keyframes float {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateY(0);
     }
+
     50% {
         transform: translateY(-10px);
     }
@@ -134,9 +152,11 @@ img {
     0% {
         background-position: 0% 50%;
     }
+
     50% {
         background-position: 100% 50%;
     }
+
     100% {
         background-position: 0% 50%;
     }
@@ -170,8 +190,6 @@ img {
 /* === الهيدر === */
 header {
     background: linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%);
-    background-size: 200% 200%;
-    animation: gradient 8s ease infinite;
     box-shadow: var(--shadow-lg);
     position: sticky;
     top: 0;
@@ -275,7 +293,7 @@ header nav a.active {
     object-fit: cover;
 }
 
-#home > div:first-of-type {
+#home>div:first-of-type {
     position: relative;
     z-index: 2;
 }
@@ -549,17 +567,14 @@ section {
 /* === قسم التواصل === */
 .contact-section {
     background: linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%);
-    background-size: 200% 200%;
-    animation: gradient 8s ease infinite;
 }
 
 .contact-card {
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.2);
     border-radius: 1rem;
     padding: 1.5rem;
     border: 1px solid rgba(255, 255, 255, 0.3);
-    transition: all var(--transition-normal);
+    transition: transform 0.2s ease, background 0.2s ease;
 }
 
 .contact-card:hover {
@@ -846,31 +861,31 @@ footer {
     section {
         padding: 3rem 0;
     }
-    
+
     .section-title {
         font-size: 1.75rem;
     }
-    
+
     #home {
         min-height: 500px;
     }
-    
+
     .hero-content h2 {
         font-size: 2rem;
     }
-    
+
     .hero-content p {
         font-size: 1rem;
     }
-    
+
     .product-image {
         height: 200px;
     }
-    
+
     .gallery-item img {
         height: 200px;
     }
-    
+
     .contact-form {
         padding: 1.5rem;
     }
@@ -881,15 +896,15 @@ footer {
     section {
         padding: 4rem 0;
     }
-    
+
     .section-title {
         font-size: 2rem;
     }
-    
+
     #home {
         min-height: 550px;
     }
-    
+
     .hero-content h2 {
         font-size: 2.5rem;
     }
@@ -900,7 +915,7 @@ footer {
     section {
         padding: 4.5rem 0;
     }
-    
+
     .section-title {
         font-size: 2.25rem;
     }
@@ -908,6 +923,7 @@ footer {
 
 /* === تحسينات الأداء === */
 @media (prefers-reduced-motion: reduce) {
+
     *,
     *::before,
     *::after {
@@ -920,18 +936,19 @@ footer {
 
 /* === تحسينات الطباعة === */
 @media print {
+
     header,
     #home,
     .btn,
     .lightbox {
         display: none !important;
     }
-    
+
     body {
         background: #fff;
         color: #000;
     }
-    
+
     section {
         padding: 2rem 0;
     }
@@ -994,6 +1011,7 @@ footer {
     0% {
         transform: rotate(0deg);
     }
+
     100% {
         transform: rotate(360deg);
     }
@@ -1135,6 +1153,7 @@ footer {
 .news-ticker-content {
     display: flex;
     animation: ticker 30s linear infinite;
+    will-change: transform;
 }
 
 .news-item {
@@ -1146,6 +1165,7 @@ footer {
     0% {
         transform: translateX(0);
     }
+
     100% {
         transform: translateX(-50%);
     }
@@ -1220,4 +1240,63 @@ footer {
 .back-to-top:hover {
     transform: translateY(-5px);
     box-shadow: var(--shadow-xl);
+}
+
+/* === تحسينات الأداء للموبايل === */
+@media (max-width: 768px) {
+
+    /* إيقاف الأنيميشنات المستمرة على الموبايل */
+    .animate-pulse {
+        animation: none !important;
+    }
+
+    .animate-bounce {
+        animation: none !important;
+    }
+
+    .news-ticker-content {
+        animation: ticker 40s linear infinite;
+    }
+
+    /* تبسيط التحولات */
+    .product-card:hover {
+        transform: none;
+    }
+
+    .gallery-item:hover img {
+        transform: scale(1.05);
+    }
+
+    .product-card:hover .product-image img {
+        transform: scale(1.05);
+    }
+
+    .contact-card:hover {
+        transform: none;
+    }
+
+    /* إزالة backdrop-filter على الموبايل */
+    .stat-item {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        background: rgba(255, 255, 255, 0.15);
+    }
+}
+
+/* === تحسين GPU compositing === */
+.news-ticker-content,
+.lightbox img {
+    will-change: transform;
+}
+
+/* تجنب layout thrashing */
+.product-card,
+.gallery-item,
+.contact-card {
+    contain: layout style;
+}
+
+/* تحسين رسم الصور */
+img {
+    content-visibility: auto;
 }
